@@ -7,5 +7,4 @@ echo "Pushing to trigger automated build"
 git push --tags
 git push
 echo "Check builds at these URLs"
-echo "https://hub.docker.com/r/nextjournal/R/builds/"
-echo "https://hub.docker.com/r/nextjournal/R/builds/"
+echo "https://hub.docker.com/r/nextjournal/r-language/builds/"
