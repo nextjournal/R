@@ -1,21 +1,21 @@
-FROM r-base
+FROM alpine:3.5
 
-RUN apt-get update && apt-get install -y curl libcurl4-openssl-dev  openssl libssl-dev \
-    && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN echo "options(repos=structure(c(CRAN=\"https://cran.rstudio.com\")))" > ~/.Rprofile
+RUN apk add --no-cache bash gawk autoconf sed grep bc coreutils curl gcc g++ git coreutils make gfortran expat-dev R\
+                       openjdk8 R-dev libressl-dev curl-dev libxml2-dev jpeg-dev ca-certificates gsl gsl-dev &&\
+  R -q -e "install.packages('Rcpp', repo='https://cran.rstudio.com')" &&\
+  curl -L -O https://cran.r-project.org/src/contrib/httpuv_1.3.3.tar.gz &&\
+  tar xvf httpuv_1.3.3.tar.gz &&\
+  sed -i -e 's/__USE_MISC/_GNU_SOURCE/g' httpuv/src/libuv/src/fs-poll.c &&\
+  tar -cf httpuv_1.3.3.tar.gz httpuv &&\
+  R CMD INSTALL httpuv_1.3.3.tar.gz &&\
+  curl -L -O ftp://ftp.unidata.ucar.edu/pub/udunits/udunits-2.2.24.tar.gz &&\
+  tar xvf udunits-2.2.24.tar.gz &&\
+  cd udunits-2.2.24 && ./configure && make && make install && cd .. &&\
+  git clone https://github.com/ropensci/git2r.git &&\
+  R CMD INSTALL --configure-args="--with-libssl-include=/usr/lib/" git2r &&\
+  R -q -e "install.packages(c('devtools'))" &&\
+  rm -rf git2r /tmp/*
 
-WORKDIR /usr/local/lib/R/site-library
-
-RUN echo "Installing base64enc library..."
-RUN curl -L -O https://cran.rstudio.com/src/contrib/base64enc_0.1-3.tar.gz
-RUN R CMD INSTALL base64enc_0.1-3.tar.gz
-RUN rm -rf base64enc_0.1-3.tar.gz
-
-RUN echo "Installing rjson library..."
-RUN curl -L -O https://cran.rstudio.com/src/contrib/rjson_0.2.15.tar.gz
-RUN R CMD INSTALL rjson_0.2.15.tar.gz
-RUN rm -rf rjson_0.2.15.tar.gz
-
-RUN echo "Installing plotly library and its dependencies..."
-RUN echo "install.packages('plotly', repos='http://cran.rstudio.com/')" | R --quiet --vanilla
-
-WORKDIR /tmp
+ADD dependencies.R dependencies.R
+RUN Rscript dependencies.R
