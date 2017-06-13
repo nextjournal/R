@@ -14,7 +14,8 @@ install_github("tidyverse/readxl")
 packages <- c("base64enc", "jsonlite", "plotly", # required for Nextjournal
               "ggplot2", "dplyr", "lubridate", "RColorBrewer", "scales", "gridExtra",
               "GGally", "gganimate", "caret", "stringr", "DT", "data.table",
-              "datatable", "maps", "ggmap", "ggthemes", "leaflet", "readr", "gapminder", "purrr")
+              "datatable", "maps", "ggmap", "ggthemes", "leaflet", "readr", "gapminder", "purrr",
+              "feather")
 ipak(packages)
 
 install_github("hadley/ggplot2")
