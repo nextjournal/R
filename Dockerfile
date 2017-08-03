@@ -18,4 +18,6 @@ RUN apk add --no-cache bash gawk autoconf sed grep bc coreutils curl gcc g++ git
   rm -rf git2r /tmp/*
 
 ADD dependencies.R dependencies.R
+ADD wrappers /wrappers
 RUN Rscript dependencies.R
+
